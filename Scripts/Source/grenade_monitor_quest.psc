@@ -17,8 +17,6 @@ Event OnUpdate()
 EndEvent
 
 Function StartChecking()
-	Debug.Notification("Starting to do the checking stuff...")
-	
 	UnregisterForUpdate()
 	Utility.Wait(0.1)
 	RegisterForUpdate(0.5)
