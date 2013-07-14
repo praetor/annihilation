@@ -12,7 +12,7 @@ Event OnUpdate()
 	; Check on the player for the monitor spell
 	Actor player = Game.GetPlayer()
 	if !player.HasMagicEffectWithKeyword(MonitorKeyword)
-		player.AddSpell(MonitorAbility)
+		player.AddSpell(MonitorAbility, false)
 	endif
 EndEvent
 
