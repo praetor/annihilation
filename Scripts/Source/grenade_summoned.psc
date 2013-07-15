@@ -35,6 +35,10 @@ Event OnUpdate()
 			GetTargetActor().StartCombat(attackTarget)
 		endif
 	endif
+	
+	if GetTargetActor().GetAV("health") <= 0.0
+		GetTargetActor().Delete()
+	endif
 EndEvent
 
 Actor Function GetNewTarget(Actor akTarget)
