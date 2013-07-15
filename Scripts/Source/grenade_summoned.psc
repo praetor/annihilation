@@ -7,15 +7,11 @@ VisualEffect Property DeathEffect Auto
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	RegisterForUpdate(0.5)
 	
-	Actor attackTarget = GetNewTarget(akTarget)
+	Utility.Wait(0.5)
 	
-	if attackTarget != None
-		Debug.Notification("Found none player target")
-		akTarget.StartCombat(attackTarget)
-	else
-		Utility.Wait(0.4)
-		akTarget.StopCombat()
-	endif
+	akTarget.SetPlayerTeammate(true, false)
+	
+	Debug.Notification("Health: " + GetTargetActor().GetAV("health") + " / Melee: " + GetTargetActor().GetAV("MeleeDamage") + " / Unarmed: " + GetTargetActor().GetAV("UnarmedDamage"))
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
@@ -28,29 +24,11 @@ Event OnEffectFinish(Actor akTarget, Actor akCaster)
 EndEvent
 
 Event OnUpdate()
-	if GetTargetActor().GetCombatState() == 1 && GetTargetActor().GetCombatTarget() == Game.GetPlayer()
-		Actor attackTarget = GetNewTarget(GetTargetActor())
-		if attackTarget != None
-			Debug.Notification("Found none player target")
-			GetTargetActor().StartCombat(attackTarget)
-		endif
+	if GetTargetActor().GetCombatTarget() == Game.GetPlayer()
+		GetTargetActor().StopCombat()
 	endif
 	
 	if GetTargetActor().GetAV("health") <= 0.0
 		GetTargetActor().Delete()
 	endif
 EndEvent
-
-Actor Function GetNewTarget(Actor akTarget)
-	; Try to find a non-player target
-	Actor attackTarget = None
-	int n = 0
-	while attackTarget == None && n < 5
-		Actor possibleTarget = Game.FindRandomActorFromRef(akTarget, AttackRadius)
-		if possibleTarget != Game.GetPlayer()
-			attackTarget = possibleTarget
-		endif
-		n = n + 1
-	endwhile
-	return attackTarget
-EndFunction
