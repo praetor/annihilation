@@ -11,6 +11,13 @@ ObjectReference ThrowProxy = None
 Event OnEffectStart(Actor akTarget, Actor akCaster)
 	RegisterForAnimationEvent(akTarget, "WeaponLeftSwing")    
 	RegisterForAnimationEvent(akTarget, "WeaponSwing")
+	
+	; Ensure we have a proxy weapon
+	; Do this now so it will be cached later when we swing
+	if ThrowProxy == None 
+		ThrowProxy = akTarget.PlaceAtMe(ProxyWeapon, 1, true)
+		ThrowProxy.SetActorCause(akTarget)
+	endif
 EndEvent
 
 Event OnEffectFinish(Actor akTarget, Actor akCaster)
@@ -52,6 +59,8 @@ Event OnAnimationEvent(ObjectReference akSource, string asEventName)
 				Ammo currentAmmo = GrenadeAmmos[index]
 				currentGrenade.Fire(ThrowProxy, currentAmmo)
 				
+				Utility.Wait(0.05)
+				
 				; Unequip and remove one grenade object
 				if leftHand
 					akActor.UnequipItemEx(currentGrenade, 2)
@@ -61,7 +70,7 @@ Event OnAnimationEvent(ObjectReference akSource, string asEventName)
 				akActor.RemoveItem(currentGrenade, 1, true)
 				
 				; Now equip a new grenade from inventory if there is one
-				Utility.Wait(0.25)
+				Utility.Wait(0.15)
 				if akActor.GetItemCount(currentGrenade) > 0
 					if leftHand
 						akActor.EquipItemEx(currentGrenade, 2)
